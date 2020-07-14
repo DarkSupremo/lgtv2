@@ -1,14 +1,16 @@
 {
   "name": "lgtv2",
-  "version": "1.2.0",
+  "version": "1.4.2",
   "description": "Simple module to remote control LG WebOS smart TVs",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "camo-purge ; xo",
+    "lint": "xo",
+    "lintfix": "xo --fix"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/hobbyquaker/lgtv2.git"
+    "url": "https://github.com/hobbyquaker/lgtv2.git"
   },
   "keywords": [
     "tv",
@@ -17,9 +19,10 @@
     "remote",
     "control"
   ],
-  "author": "Sebastian Raff <hq@ccu.io> (https://github.com/hobbyquaker)",
+  "author": "Sebastian Raff <hobbyquaker@gmail.com> (https://github.com/hobbyquaker)",
   "contributors": [
-    "forty2 (https://github.com/forty2/)"
+    "forty2 https://github.com/forty2",
+    "Marcin https://github.com/merdok"
   ],
   "license": "MIT",
   "bugs": {
@@ -27,6 +30,22 @@
   },
   "homepage": "https://github.com/hobbyquaker/lgtv2",
   "dependencies": {
-    "websocket": "^1.0.17"
+    "mkdirp": "^0.5.1",
+    "persist-path": "^1.0.2",
+    "websocket": "^1.0.24"
+  },
+  "devDependencies": {
+    "camo-purge": "latest",
+    "xo": "latest"
+  },
+  "xo": {
+    "space": 4,
+    "esnext": false,
+    "ignore": [
+      "test.js"
+    ],
+    "rules": {
+      "unicorn/regex-shorthand": "warn"
+    }
   }
 }

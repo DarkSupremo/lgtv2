@@ -1,17 +1,35 @@
 # LGTV2
 
-[![License][mit-badge]][mit-url]
 [![NPM version](https://badge.fury.io/js/lgtv2.svg)](http://badge.fury.io/js/lgtv2)
-[![Dependency Status](https://img.shields.io/gemnasium/hobbyquaker/lgtv2.svg?maxAge=2592000)](https://gemnasium.com/github.com/hobbyquaker/lgtv2)
+[![npm](https://img.shields.io/npm/dt/lgtv2.svg)]()
+[![dependencies Status](https://david-dm.org/hobbyquaker/lgtv2/status.svg)](https://david-dm.org/hobbyquaker/lgtv2)
+[![Build Status](https://travis-ci.org/hobbyquaker/lgtv2.svg?branch=master)](https://travis-ci.org/hobbyquaker/lgtv2)
+[![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
+[![License][mit-badge]][mit-url]
 
 Simple Node.js module to remote control LG WebOS smart TVs.
 
 > this is a fork of [LGTV.js](https://github.com/msloth/lgtv.js), heavily modified and rewritten to suite my needs.
 
+With __v1.4.0__ the location and filename of the keyFile is changed, so you likely will have to accept the connection on 
+your TV again after upgrading to 1.4.0.
+
+
+## Projects using this Module
+
+* [node-red-contrib-lgtv](https://github.com/hobbyquaker/node-red-contrib-lgtv) - [Node-RED](https://nodered.org/) Nodes to control LG webOS Smart TVs.
+* [lgtv2mqtt](https://github.com/hobbyquaker/lgtv2mqtt) - Interface between LG WebOS Smart TVs and MQTT.
+* [homebridge-webos-tv](https://github.com/merdok/homebridge-webos-tv) - [Homebridge](https://github.com/nfarina/homebridge) plugin for LG WebOS TVs.
+* [ioBroker.lgtv](https://github.com/SebastianSchultz/ioBroker.lgtv) - LG WebOS SmartTV adapter for [ioBroker](http://iobroker.net/).
+
 
 ## Installation
 
 `npm install lgtv2`
+
+## TV configuration
+
+You need to allow "LG Connect Apps" on your TV - see http://www.lg.com/uk/support/product-help/CT00008334-1437131798537-others
 
 ## Usage Examples
 
@@ -23,12 +41,16 @@ var lgtv = require("lgtv2")({
     url: 'ws://lgwebostv:3000'
 });
 
+lgtv.on('error', function (err) {
+    console.log(err);
+});
+
 lgtv.on('connect', function () {
     console.log('connected');
     
     lgtv.subscribe('ssap://audio/getVolume', function (err, res) {
         if (res.changed.indexOf('volume') !== -1) console.log('volume changed', res.volume);
-        if (res.changed.indexOf('muted') !== -1) console.log('mute changed', mute);
+        if (res.changed.indexOf('muted') !== -1) console.log('mute changed', res.muted);
     });
     
 });
@@ -39,6 +61,10 @@ Turn TV off:
 
 var lgtv = require("lgtv2")({
     url: 'ws://lgwebostv:3000'
+});
+
+lgtv.on('error', function (err) {
+    console.log(err);
 });
 
 lgtv.on('connect', function () {
@@ -57,7 +83,10 @@ lgtv.on('connect', function () {
 * url - websocket url of TV. default: 'ws://lgwebostv:3000'
 * timeout - request timeout in milliseconds, default: 15000
 * reconnect - reconnect interval in milliseconds, default: 5000
-* keyFile - path for key storage. Will be suffixed with hostname/ip of TV. default: "./lgtv-"
+* keyFile - path for key storage. Will be suffixed with hostname/ip of TV. default: Linux: `~/.lgtv2/keyfile-`, macOS: 
+`~/Library/Preferences/lgtv2/keyfile-`
+* saveKey - you can override this with your own function for saving the key
+* clientKey - you have to supply the key here if you're using a custom saveKey method
 
 ### methods
 
@@ -106,7 +135,8 @@ is called when trying to connect to the TV
 
 #### error
 
-is called when Websocket connection errors occur. Subsequent equal errors will only be emitted once (So your log isn't flooded with EHOSTUNREACH errors if your TV is off)
+is called when Websocket connection errors occur. Subsequent equal errors will only be emitted once (So your log isn't 
+flooded with EHOSTUNREACH errors if your TV is off)
 
 
 
@@ -209,7 +239,7 @@ Example: ```lgtv.request('ssap://system.launcher/launch', {id: 'netflix'});```
 
 ## License
 
-MIT (c) 2015 [Sebastian Raff](https://github.com/hobbyquaker)
+MIT (c) [Sebastian Raff](https://github.com/hobbyquaker)
 
 [mit-badge]: https://img.shields.io/badge/License-MIT-blue.svg?style=flat
 [mit-url]: LICENSE
